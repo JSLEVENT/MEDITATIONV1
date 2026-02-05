@@ -1,0 +1,101 @@
+import { useState } from 'react';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { useAuthStore } from '../stores/authStore';
+
+export default function LoginScreen() {
+  const navigation = useNavigation();
+  const { signIn } = useAuthStore();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+
+  const handleLogin = async () => {
+    setError('');
+    try {
+      await signIn(email, password);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Login failed');
+    }
+  };
+
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}>Welcome back</Text>
+      <Text style={styles.subtitle}>Log in to Serenity AI</Text>
+
+      <TextInput
+        style={styles.input}
+        placeholder="Email"
+        autoCapitalize="none"
+        keyboardType="email-address"
+        value={email}
+        onChangeText={setEmail}
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Password"
+        secureTextEntry
+        value={password}
+        onChangeText={setPassword}
+      />
+
+      {error ? <Text style={styles.error}>{error}</Text> : null}
+
+      <TouchableOpacity style={styles.primaryButton} onPress={handleLogin}>
+        <Text style={styles.primaryButtonText}>Log in</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity onPress={() => navigation.navigate('Signup' as never)}>
+        <Text style={styles.link}>Create an account</Text>
+      </TouchableOpacity>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 24,
+    justifyContent: 'center',
+    backgroundColor: '#F5F1E8'
+  },
+  title: {
+    fontSize: 28,
+    fontWeight: '600',
+    color: '#1B3A5C'
+  },
+  subtitle: {
+    marginTop: 8,
+    marginBottom: 24,
+    color: '#4B5563'
+  },
+  input: {
+    backgroundColor: '#FFFFFF',
+    padding: 12,
+    borderRadius: 10,
+    marginBottom: 12,
+    borderColor: '#E5E7EB',
+    borderWidth: 1
+  },
+  primaryButton: {
+    backgroundColor: '#2C7A7B',
+    padding: 14,
+    borderRadius: 10,
+    alignItems: 'center',
+    marginTop: 12
+  },
+  primaryButtonText: {
+    color: '#FFFFFF',
+    fontWeight: '600'
+  },
+  link: {
+    marginTop: 16,
+    color: '#2C7A7B',
+    textAlign: 'center'
+  },
+  error: {
+    color: '#DC2626',
+    marginBottom: 8
+  }
+});

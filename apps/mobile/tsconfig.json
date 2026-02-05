@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "jsx": "react-native",
+    "moduleResolution": "NodeNext",
+    "module": "NodeNext",
+    "noEmit": true
+  },
+  "include": ["src", "App.tsx"]
+}
