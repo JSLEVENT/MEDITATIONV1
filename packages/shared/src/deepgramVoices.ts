@@ -105,8 +105,7 @@ const aura2Dutch = [
   'aura-2-hestia-nl',
   'aura-2-lars-nl',
   'aura-2-roman-nl',
-  'aura-2-rhea-nl',
-  'aura-2-leda-nl'
+  'aura-2-rhea-nl'
 ];
 
 const aura2French = ['aura-2-agathe-fr', 'aura-2-hector-fr'];

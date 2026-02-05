@@ -33,6 +33,7 @@ pnpm install
 - `apps/mobile/.env`
 
 Start from the `.env.example` files.
+Set `ADMIN_EMAILS` (comma-separated) to enable admin-only settings like default TTS voice.
 
 3. Database migrations + seed:
 ```bash
