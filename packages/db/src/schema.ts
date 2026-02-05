@@ -188,6 +188,12 @@ export const prompt_templates = pgTable('prompt_templates', {
   created_at: timestamp('created_at', { withTimezone: true }).notNull().defaultNow()
 });
 
+export const app_settings = pgTable('app_settings', {
+  key: text('key').primaryKey(),
+  value: jsonb('value').notNull(),
+  updated_at: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow()
+});
+
 export const analytics_events = pgTable(
   'analytics_events',
   {
@@ -257,6 +263,9 @@ export type NewAudioStem = InferInsertModel<typeof audio_stems>;
 
 export type PromptTemplateRow = InferSelectModel<typeof prompt_templates>;
 export type NewPromptTemplateRow = InferInsertModel<typeof prompt_templates>;
+
+export type AppSetting = InferSelectModel<typeof app_settings>;
+export type NewAppSetting = InferInsertModel<typeof app_settings>;
 
 export type AnalyticsEvent = InferSelectModel<typeof analytics_events>;
 export type NewAnalyticsEvent = InferInsertModel<typeof analytics_events>;

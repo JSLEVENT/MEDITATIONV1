@@ -9,6 +9,7 @@ import waitlistRoutes from './waitlist';
 import analyticsRoutes from './analytics';
 import notificationsRoutes from './notifications';
 import healthRoutes from './health';
+import adminRoutes from './admin';
 
 const router = Router();
 
@@ -22,5 +23,6 @@ router.use('/waitlist', waitlistRoutes);
 router.use('/analytics', analyticsRoutes);
 router.use('/notifications', notificationsRoutes);
 router.use('/health', healthRoutes);
+router.use('/admin', adminRoutes);
 
 export default router;

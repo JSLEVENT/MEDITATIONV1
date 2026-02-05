@@ -13,6 +13,7 @@ import { generateScript } from './claudeService';
 import { validateScript } from './scriptValidator';
 import { PromptTemplate, SessionBrief } from '@serenity/shared';
 import { generateAudio } from './audioPipeline';
+import { getAppSetting } from './appSettings';
 
 const fallbackTemplate: PromptTemplate = {
   id: 'fallback',
@@ -120,7 +121,8 @@ export const generationOrchestrator = async ({
     });
 
     let audioUrl: string | null = null;
-    const ttsModel = process.env.DEEPGRAM_MODEL || 'aura-asteria-en';
+    const configuredModel = await getAppSetting<string>('tts_model');
+    const ttsModel = configuredModel || process.env.DEEPGRAM_MODEL || 'aura-asteria-en';
 
     if (process.env.DEEPGRAM_API_KEY && process.env.R2_BUCKET_NAME) {
       try {

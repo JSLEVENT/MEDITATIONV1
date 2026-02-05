@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { db } from '../lib/db';
 import { users, user_profiles } from '@serenity/db';
 import { authMiddleware } from '../middleware/authMiddleware';
+import { isAdminEmail } from '../lib/admin';
 import { eq } from 'drizzle-orm';
 
 const router = Router();
@@ -30,7 +31,8 @@ router.get('/me', authMiddleware, async (req, res) => {
     .from(user_profiles)
     .where(eq(user_profiles.user_id, authUser.id));
 
-  return res.json({ user, profile });
+  const is_admin = isAdminEmail(authUser.email);
+  return res.json({ user, profile, is_admin });
 });
 
 router.patch('/me', authMiddleware, async (req, res) => {

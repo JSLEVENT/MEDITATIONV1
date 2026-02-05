@@ -1,23 +1,46 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import PrimaryButton from '../../components/PrimaryButton';
 import { apiFetch } from '../../lib/api';
 import { setTheme } from '../../lib/theme';
+
+type AdminVoiceOption = {
+  id: string;
+  name: string;
+  group: string;
+  language: string;
+  family: 'Aura 2' | 'Aura 1';
+};
 
 export default function SettingsPage() {
   const [name, setName] = useState('');
   const [duration, setDuration] = useState(15);
   const [saving, setSaving] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [ttsModel, setTtsModel] = useState('');
+  const [ttsOptions, setTtsOptions] = useState<AdminVoiceOption[]>([]);
+  const [savingTts, setSavingTts] = useState(false);
 
   useEffect(() => {
     const loadProfile = async () => {
-      const data = await apiFetch<{ user: { name: string | null }; profile: { preferred_duration: number } }>(
-        '/users/me'
-      );
+      const data = await apiFetch<{
+        user: { name: string | null };
+        profile: { preferred_duration: number };
+        is_admin?: boolean;
+      }>('/users/me');
       setName(data.user?.name || '');
       setDuration(data.profile?.preferred_duration || 15);
+      setIsAdmin(Boolean(data.is_admin));
+
+      if (data.is_admin) {
+        const adminData = await apiFetch<{ current: string; options: AdminVoiceOption[] }>(
+          '/admin/tts-model'
+        );
+        setTtsModel(adminData.current);
+        setTtsOptions(adminData.options);
+      }
     };
 
     void loadProfile();
@@ -41,6 +64,22 @@ export default function SettingsPage() {
     const data = await apiFetch<{ url: string }>('/subscriptions/portal', { method: 'POST' });
     window.location.href = data.url;
   };
+
+  const groupedOptions = useMemo(() => {
+    const groups: Record<string, AdminVoiceOption[]> = {};
+    for (const option of ttsOptions) {
+      if (!groups[option.group]) {
+        groups[option.group] = [];
+      }
+      groups[option.group].push(option);
+    }
+    return groups;
+  }, [ttsOptions]);
+
+  const groupOrder = useMemo(
+    () => Array.from(new Set(ttsOptions.map((option) => option.group))),
+    [ttsOptions]
+  );
 
   return (
     <main className="min-h-screen bg-sand px-6 py-12">
@@ -87,6 +126,45 @@ export default function SettingsPage() {
             Manage subscription
           </button>
         </div>
+
+        {isAdmin && (
+          <div className="mt-10 border-t border-slate-200 pt-8">
+            <h2 className="text-lg font-semibold text-navy">Admin settings</h2>
+            <div className="mt-4 space-y-3">
+              <div>
+                <label className="block text-sm text-slate-600">Default TTS voice</label>
+                <select
+                  value={ttsModel}
+                  onChange={(event) => setTtsModel(event.target.value)}
+                  className="mt-1 w-full"
+                >
+                  {groupOrder.map((group) => (
+                    <optgroup key={group} label={group}>
+                      {(groupedOptions[group] || []).map((option) => (
+                        <option key={option.id} value={option.id}>
+                          {option.name}
+                        </option>
+                      ))}
+                    </optgroup>
+                  ))}
+                </select>
+              </div>
+              <PrimaryButton
+                onClick={async () => {
+                  setSavingTts(true);
+                  await apiFetch('/admin/tts-model', {
+                    method: 'PUT',
+                    body: JSON.stringify({ model: ttsModel })
+                  });
+                  setSavingTts(false);
+                }}
+                disabled={savingTts || !ttsModel}
+              >
+                {savingTts ? 'Saving voice...' : 'Save voice'}
+              </PrimaryButton>
+            </div>
+          </div>
+        )}
       </div>
     </main>
   );

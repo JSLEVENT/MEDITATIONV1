@@ -6,6 +6,7 @@ ALTER TABLE session_inputs ENABLE ROW LEVEL SECURITY;
 ALTER TABLE session_scripts ENABLE ROW LEVEL SECURITY;
 ALTER TABLE session_feedback ENABLE ROW LEVEL SECURITY;
 ALTER TABLE subscriptions ENABLE ROW LEVEL SECURITY;
+ALTER TABLE app_settings ENABLE ROW LEVEL SECURITY;
 ALTER TABLE analytics_events ENABLE ROW LEVEL SECURITY;
 ALTER TABLE enterprise_members ENABLE ROW LEVEL SECURITY;
 
@@ -63,6 +64,11 @@ CREATE POLICY "analytics_select_own" ON analytics_events
 
 CREATE POLICY "analytics_insert_own" ON analytics_events
   FOR INSERT WITH CHECK (user_id = auth.uid());
+
+-- App settings (service role only)
+CREATE POLICY "app_settings_service_only" ON app_settings
+  FOR ALL USING (auth.role() = 'service_role')
+  WITH CHECK (auth.role() = 'service_role');
 
 -- Enterprise members scoped to org
 CREATE POLICY "enterprise_members_select_own" ON enterprise_members

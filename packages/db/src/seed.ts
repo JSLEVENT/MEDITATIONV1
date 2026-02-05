@@ -1,6 +1,6 @@
 import { drizzle } from 'drizzle-orm/node-postgres';
 import { Pool } from 'pg';
-import { audio_stems, prompt_templates } from './schema';
+import { audio_stems, prompt_templates, app_settings } from './schema';
 
 const connectionString = process.env.DATABASE_URL;
 
@@ -58,6 +58,11 @@ async function main() {
       r2_key: 'stems/forest.mp3'
     }
   ]);
+
+  await db.insert(app_settings).values({
+    key: 'tts_model',
+    value: 'aura-asteria-en'
+  });
 
   await pool.end();
   console.log('Seed data inserted');
