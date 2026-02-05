@@ -7,7 +7,7 @@ Full-stack AI-guided meditation platform with web, API, and mobile apps.
 - API: Express + TypeScript
 - DB/Auth: Supabase + Drizzle ORM
 - AI: Anthropic Claude
-- TTS: ElevenLabs
+- TTS: Deepgram
 - Audio: FFmpeg mixing + Cloudflare R2
 - Payments: Stripe
 - Mobile: Expo (React Native)

@@ -120,9 +120,9 @@ export const generationOrchestrator = async ({
     });
 
     let audioUrl: string | null = null;
-    const voiceId = process.env.ELEVENLABS_VOICE_ID;
+    const ttsModel = process.env.DEEPGRAM_MODEL || 'aura-asteria-en';
 
-    if (voiceId && process.env.ELEVENLABS_API_KEY && process.env.R2_BUCKET_NAME) {
+    if (process.env.DEEPGRAM_API_KEY && process.env.R2_BUCKET_NAME) {
       try {
         const [stem] = await db
           .select()
@@ -132,7 +132,7 @@ export const generationOrchestrator = async ({
         if (stem?.r2_key) {
           const audio = await generateAudio({
             script,
-            voiceId,
+            ttsModel,
             backgroundStemKey: stem.r2_key,
             targetDurationSeconds: durationMinutes * 60,
             sessionId

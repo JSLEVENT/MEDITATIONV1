@@ -16,6 +16,7 @@
     "@sentry/node": "^8.13.0",
     "@aws-sdk/client-s3": "^3.668.0",
     "@aws-sdk/s3-request-presigner": "^3.668.0",
+    "@deepgram/sdk": "^3.6.0",
     "@serenity/db": "workspace:*",
     "@serenity/shared": "workspace:*",
     "@supabase/supabase-js": "^2.45.0",
