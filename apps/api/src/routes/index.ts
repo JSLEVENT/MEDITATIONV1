@@ -6,6 +6,8 @@ import subscriptionRoutes from './subscriptions';
 import webhookRoutes from './webhooks';
 import audioRoutes from './audio';
 import waitlistRoutes from './waitlist';
+import analyticsRoutes from './analytics';
+import notificationsRoutes from './notifications';
 import healthRoutes from './health';
 
 const router = Router();
@@ -17,6 +19,8 @@ router.use('/subscriptions', subscriptionRoutes);
 router.use('/webhooks', webhookRoutes);
 router.use('/audio', audioRoutes);
 router.use('/waitlist', waitlistRoutes);
+router.use('/analytics', analyticsRoutes);
+router.use('/notifications', notificationsRoutes);
 router.use('/health', healthRoutes);
 
 export default router;

@@ -1,0 +1,6 @@
+{
+  "buildCommand": "pnpm --filter @serenity/web build",
+  "installCommand": "pnpm install",
+  "framework": "nextjs",
+  "outputDirectory": ".next"
+}

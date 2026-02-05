@@ -10,6 +10,7 @@ import {
 import { authMiddleware } from '../middleware/authMiddleware';
 import { sessionCreateRateLimit } from '../middleware/rateLimitMiddleware';
 import { generationOrchestrator } from '../services/generationOrchestrator';
+import { trackAnalyticsEvent } from '../services/analyticsService';
 import { getSignedAudioUrl } from '../services/storageService';
 import { and, desc, eq, gte, sql } from 'drizzle-orm';
 
@@ -73,6 +74,11 @@ router.post('/create', authMiddleware, sessionCreateRateLimit(10, 60 * 60), asyn
     durationMinutes,
     soundPreference: sound
   }).catch((error) => console.error('Generation failed', error));
+
+  void trackAnalyticsEvent(authUser.id, 'session_created', {
+    duration_minutes: durationMinutes,
+    sound: sound || null
+  });
 
   return res.status(202).json({ session_id: session.id });
 });
@@ -187,6 +193,10 @@ router.post('/:id/feedback', authMiddleware, async (req, res) => {
     too_long: too_long ?? null,
     too_short: too_short ?? null,
     notes: notes ?? null
+  });
+
+  void trackAnalyticsEvent(authUser.id, 'session_feedback', {
+    rating: Number(rating)
   });
 
   return res.status(201).json({ status: 'ok' });
